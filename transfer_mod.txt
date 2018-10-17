@@ -1,0 +1,41 @@
+' https://www.excel-easy.com/vba/create-a-macro.html#command-button
+' https://www.thespreadsheetguru.com/the-code-vault/best-way-to-copy-pastespecial-values-only-with-vba
+
+' Belongs in Ship Sheet as a Module
+' Copying FROM Schedule TO Shipsheet
+
+Private Sub RMCopyCarryOver()
+
+' Type 2 is Text
+Dim schedule As String
+schedule = Application.InputBox(Prompt:="Enter the date (ie. 10-05)", Type:=2)
+
+Dim schedNetRange As String = "E5:E10"
+Dim schedRawRange As String = "E5:E10"
+
+Dim finalSchedRow As Integer = 5
+Dim netLbsRow As Integer = 25
+Dim activeColumn As String
+activeColumn = Split(ActiveCell(1).Address(1, 0), "$")(0)
+
+Dim finalSchedCell As String
+finalSchedCell = activeColumn + finalSchedRow
+
+Dim netLbsCell As String
+netLbsCell = activeColumn + netLbsRow
+
+' Copy - Raw Yields
+Dim schedRaw As Range
+Set schedRaw = Workbooks(schedule).Worksheets("Raw Materials").Range(schedRawRange)
+
+' Paste - Final Sched
+ActiveSheet.Range(finalSchedCell).Resize(schedRaw.Rows.Count, schedRaw.Columns.Count).Cells.Value = schedRaw.Cells.Value
+
+' Copy - Net Lbs
+Dim schedNet As Range
+Set schedNet = Workbooks(schedule).Worksheets("Raw Materials").Range(schedNetRange)
+
+' Paste - Net Lbs
+ActiveSheet.Range(netLbsCell).Resize(schedNet.Rows.Count, schedNet.Columns.Count).Cells.Value = schedNet.Cells.Value
+
+End Sub
